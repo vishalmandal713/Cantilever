@@ -1,0 +1,163 @@
+// INVENTORY MANAGEMENT SYSTEM
+
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <iomanip>
+#include <string>
+using namespace std;
+
+struct Product {
+    int id;
+    string name;
+    int quantity;
+    double price;
+};
+
+// Utility functions
+void saveToFile(const vector<Product>& products, const string& filename) {
+    ofstream file(filename);
+    for (const auto& p : products) {
+        file << p.id << "," << p.name << "," << p.quantity << "," << p.price << "\n";
+    }
+}
+
+vector<Product> loadFromFile(const string& filename) {
+    vector<Product> products;
+    ifstream file(filename);
+    string line;
+    while (getline(file, line)) {
+        Product p;
+        size_t pos = 0;
+        pos = line.find(',');
+        p.id = stoi(line.substr(0, pos));
+        line.erase(0, pos + 1);
+
+        pos = line.find(',');
+        p.name = line.substr(0, pos);
+        line.erase(0, pos + 1);
+
+        pos = line.find(',');
+        p.quantity = stoi(line.substr(0, pos));
+        line.erase(0, pos + 1);
+
+        p.price = stod(line);
+
+        products.push_back(p);
+    }
+    return products;
+}
+
+void addProduct(vector<Product>& products) {
+    Product p;
+    cout << "Enter Product ID: ";
+    cin >> p.id;
+    cout << "Enter Product Name: ";
+    cin.ignore();
+    getline(cin, p.name);
+    cout << "Enter Quantity: ";
+    cin >> p.quantity;
+    cout << "Enter Price: ";
+    cin >> p.price;
+
+    products.push_back(p);
+    cout << "Product added successfully.\n";
+}
+
+void displayProducts(const vector<Product>& products) {
+    cout << left << setw(10) << "ID" << setw(20) << "Name"
+         << setw(10) << "Qty" << setw(10) << "Price\n";
+    cout << "----------------------------------------------------\n";
+    for (const auto& p : products) {
+        cout << left << setw(10) << p.id << setw(20) << p.name
+             << setw(10) << p.quantity << fixed << setprecision(2) << p.price << "\n";
+    }
+}
+
+void searchProduct(const vector<Product>& products) {
+    int searchId;
+    cout << "Enter Product ID to search: ";
+    cin >> searchId;
+
+    bool found = false;
+    for (const auto& p : products) {
+        if (p.id == searchId) {
+            cout << "Product Found: " << p.name << ", Qty: " << p.quantity << ", Price: " << p.price << "\n";
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        cout << "Product not found.\n";
+    }
+}
+
+void updateProduct(vector<Product>& products) {
+    int id;
+    cout << "Enter Product ID to update: ";
+    cin >> id;
+
+    for (auto& p : products) {
+        if (p.id == id) {
+            cout << "Enter new name: ";
+            cin.ignore();
+            getline(cin, p.name);
+            cout << "Enter new quantity: ";
+            cin >> p.quantity;
+            cout << "Enter new price: ";
+            cin >> p.price;
+            cout << "Product updated.\n";
+            return;
+        }
+    }
+    cout << "Product not found.\n";
+}
+
+void deleteProduct(vector<Product>& products) {
+    int id;
+    cout << "Enter Product ID to delete: ";
+    cin >> id;
+
+    auto it = remove_if(products.begin(), products.end(), [id](Product& p) {
+        return p.id == id;
+    });
+
+    if (it != products.end()) {
+        products.erase(it, products.end());
+        cout << "Product deleted.\n";
+    } else {
+        cout << "Product not found.\n";
+    }
+}
+
+int main() {
+    vector<Product> products;
+    const string filename = "inventory.txt";
+
+    products = loadFromFile(filename);
+
+    int choice;
+    do {
+        cout << "\nInventory Management System\n";
+        cout << "1. Add Product\n";
+        cout << "2. Display All Products\n";
+        cout << "3. Search Product\n";
+        cout << "4. Update Product\n";
+        cout << "5. Delete Product\n";
+        cout << "6. Save and Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addProduct(products); break;
+            case 2: displayProducts(products); break;
+            case 3: searchProduct(products); break;
+            case 4: updateProduct(products); break;
+            case 5: deleteProduct(products); break;
+            case 6: saveToFile(products, filename); cout << "Data saved. Exiting...\n"; break;
+            default: cout << "Invalid choice. Try again.\n";
+        }
+    } while (choice != 6);
+
+    return 0;
+}
