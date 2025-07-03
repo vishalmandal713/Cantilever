@@ -149,12 +149,19 @@ int main() {
         cin >> choice;
 
         switch (choice) {
-            case 1: addProduct(products); break;
-            case 2: displayProducts(products); break;
-            case 3: searchProduct(products); break;
-            case 4: updateProduct(products); break;
-            case 5: deleteProduct(products); break;
-            case 6: saveToFile(products, filename); cout << "Data saved. Exiting...\n"; break;
+            case 1: addProduct(products); 
+            break;
+            case 2: displayProducts(products); 
+            break;
+            case 3: searchProduct(products); 
+            break;
+            case 4: updateProduct(products); 
+            break;
+            case 5: deleteProduct(products); 
+            break;
+            case 6: saveToFile(products, filename); 
+            cout << "Data saved. Exiting...\n"; 
+            break;
             default: cout << "Invalid choice. Try again.\n";
         }
     } while (choice != 6);
