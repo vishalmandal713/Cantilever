@@ -14,7 +14,7 @@ struct Product {
     double price;
 };
 
-// Utility functions
+
 void saveToFile(const vector<Product>& products, const string& filename) {
     ofstream file(filename);
     for (const auto& p : products) {
