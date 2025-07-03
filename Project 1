@@ -5,6 +5,7 @@
 #include <vector>
 #include <iomanip>
 #include <string>
+#include <algorithm>
 using namespace std;
 
 struct Product {
